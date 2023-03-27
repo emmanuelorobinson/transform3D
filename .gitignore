@@ -1,0 +1,7 @@
+.vscode
+
+dataset/*
+mesh/*
+mesh_eval/*
+evaluate/*
+saleh_dataset/*
