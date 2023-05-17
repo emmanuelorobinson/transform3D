@@ -1,7 +1,11 @@
 .vscode
 
-dataset/*
-mesh/*
+dataset*/*
 mesh_eval/*
 evaluate/*
 saleh_dataset/*
+runs/*
+
+playground/binaryClassResnet.py
+playground/binaryTest.py
+playground/kfoldResnet.py

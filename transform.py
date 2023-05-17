@@ -256,6 +256,7 @@ def remove_bg(file):
   cv2.imwrite(file, result)
 
 # remove background of a specific color from an image
+# #d8dcd6
 def remove_bg_color(file):
 
   # Read image

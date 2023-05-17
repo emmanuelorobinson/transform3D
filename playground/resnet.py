@@ -22,6 +22,10 @@ from keras.preprocessing.image import ImageDataGenerator
 # from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 
+#tf metrics
+from tensorflow.keras.metrics import Precision, Recall
+
+
 from PIL import Image
 
 # Fixed for our Cats & Dogs classes
@@ -36,16 +40,16 @@ DENSE_LAYER_ACTIVATION = "softmax"
 OBJECTIVE_FUNCTION = "categorical_crossentropy"
 
 # Common accuracy metric for all outputs, but can use different metrics for different output
-LOSS_METRICS = ["accuracy"]
+LOSS_METRICS = ["accuracy", Precision(), Recall()]
 
 # EARLY_STOP_PATIENCE must be < NUM_EPOCHS
-NUM_EPOCHS = 60
+NUM_EPOCHS = 100
 EARLY_STOP_PATIENCE = 15
 
 # These steps value should be proper FACTOR of no.-of-images in train & valid folders respectively
 # NOTE that these BATCH* are for Keras ImageDataGenerator batching to fill epoch step input
 BATCH_SIZE_TRAINING = 64
-BATCH_SIZE_VALIDATION = 32
+BATCH_SIZE_VALIDATION = 64
 
 
 # Using 1 to easily manage mapping between test_generator & prediction for submission preparation
@@ -55,6 +59,10 @@ BATCH_SIZE_TESTING = 1
 # resnet_weights_path = ResNet50
 # Still not talking about our train/test data or any pre-processing.
 
+
+import datetime
+now = datetime.datetime.now()
+date_time = now.strftime("%Y-%m-%d_%H-%M-%S")
 
 model = Sequential()
 
@@ -111,7 +119,8 @@ STEPS_PER_EPOCH_VALIDATION = VALIDATION_SIZE // BATCH_SIZE_VALIDATION
 
 cb_early_stopper = EarlyStopping(monitor="val_loss", patience=EARLY_STOP_PATIENCE)
 cb_checkpointer = ModelCheckpoint(
-    filepath="./ImgClassModelBest.h5",
+    # filepath="./ImgClassModelBest.h5",
+    filepath="./runs/ImgClassModelBest_" + date_time + ".h5",
     monitor="val_loss",
     save_best_only=True,
     mode="auto",
@@ -127,13 +136,20 @@ fit_history = model.fit_generator(
     # callbacks=[cb_checkpointer]
 )
 
+
 # model.save_weights("./best.hdf5")
-model.save("./ImgClassModelV2.h5")
+# model.save("./ImgClassModelV2.h5")
+model.save("./runs/ImgClassModelV2_" + date_time + ".h5")
+
+
+
+# add date and time to file name
 
 
 # save epoch, loss, accuracy, val_loss, val_accuracy to csv
 df = pd.DataFrame(fit_history.history)
-df.to_csv("./history.csv", index=False)
+df.to_csv("./runs/history_" + date_time + ".csv", index=False)
+# df.to_csv("./history.csv", index=False)
 
 
 print(fit_history.history.keys())
